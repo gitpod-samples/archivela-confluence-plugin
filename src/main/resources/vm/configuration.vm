@@ -1,0 +1,182 @@
+$webResourceManager.requireResource("com.atlassian.auiplugin:aui-select2")
+
+/**
+ * Template for Archivela Configuration page in the administration.
+ * Origin and contribution from Email-to-Confluence.
+ */
+
+<html>
+    <head>
+        <title>Archivela Configuration</title>
+        <meta name="decorator" content="atl.admin" />
+        
+        <script type="text/javascript">
+
+            /**
+             * Add a rule to the rules table.
+             */
+            function addRule() {
+                var tr = AJS.$("<tr>");
+
+                var buttons = AJS.$("<td>");
+                buttons.append(AJS.$("<button>", {
+                    class: "aui-button aui-button-subtle rules.delete",
+                    html: '<span class="aui-icon aui-icon-small aui-iconfont-delete"></span>',
+                    title: "remove",
+                    type: "button",
+                    style: "float:left"
+                }));
+                
+                /** Names map to ConfigurationAction */
+                tr.append(
+                "<td><input class='autocomplete-page text full-width-field rules.sourceParentPage' name='ruleSourceParentPages' data-template='{title} ({space.key})' data-resize-to-input='true' data-none-message='$i18n.getText('prop.de.langs.archivela.noresults')'</td>"
+                );
+                
+                tr.append(
+                "<td><input class='autocomplete-page text full-width-field rules.targetParentPage' name='ruleTargetParentPages' data-template='{title} ({space.key})' data-resize-to-input='true' data-none-message='$i18n.getText('prop.de.langs.archivela.noresults')'></td>"
+                );
+                
+                tr.append(
+                "<td><input class='text full-width-field rules.prefix' name='rulePrefixes'></td>"
+                );
+                
+                tr.append(
+                "<td><input class='text full-width-field rules.dateFormat' name='ruleDateFormats' value='yyyy-MM-dd'></td>"
+                );
+                
+                tr.append(
+                "<td><input class='autocomplete-user text full-width-field rules.jobUser' name='ruleJobUsers' data-template='{username}' data-resize-to-input='true' data-none-message='$i18n.getText('prop.de.langs.archivela.noresults')'></td>"
+                );
+                
+                tr.append(
+                "<td><select class='rules.recursive' name='ruleRecursives'><option selected='selected' value='yes'>Yes</option><option value='no'>No</option></select></td>"
+                );
+                
+                tr.append(buttons);
+
+                AJS.$("#rules tbody").append(tr);
+                
+                tr.find(".rules\\.recursive").auiSelect2({minimumResultsForSearch: -1});
+            }
+
+            AJS.$(document).ready(function() {
+
+                AJS.$(".rules\\.recursive").auiSelect2({minimumResultsForSearch: -1});
+
+                AJS.$("#rules").on('click', ".rules\\.delete", function () {
+                    AJS.$(this).closest('tr').remove();
+                });
+
+                AJS.$("#rules\\.add").click(function() {
+                    addRule();
+                });
+            });
+        </script>
+        
+    </head>
+    <body>
+
+        #if ($actionErrors)
+            <div style="margin-bottom: 10px;">
+                #parse( "/template/includes/actionerrors.vm" )
+            </div>
+        #end
+
+        #if ($actionMessages)
+            <div style="margin-bottom: 10px;">
+                #parse( "/template/includes/actionmessages.vm" )
+            </div>
+        #end
+
+        <form class="aui" id="editconfiguration_form" name="editconfiguration_form" method="POST" action="doConfiguration.action">
+
+            <div class="help-panel" style="margin-bottom: 10px;">
+                <div class="help-panel-header">
+                    <strong>
+                        <span class="aui-icon aui-icon-small aui-iconfont-info confluence-information-macro-icon"></span>
+                        Information
+                    </strong>
+                </div>
+                <div class="help-panel-content">
+                    <p>
+                        Child pages of the given source parent page containing a parsable date label are moved underneath the target parent page if that date is in the past. Hence, for archiving (move) to happen, add a label containing a date of the specified date format to any of the child pages of the given source parent page - this page will be automatically moved to the target parent page once the date has expired.
+                    </p>
+                    <p>
+                        All rules will be executed by the Archivela Job which, if needed, can be configured <a href="$settingsManager.globalSettings.baseUrl/admin/scheduledjobs/viewscheduledjobs.action" >here</a>. 
+                    </p>
+                </div>
+            </div>
+
+            <h2>Rules</h2>
+
+            <div style="margin: 10px 0 0 0;">
+                <fieldset class="group" style="padding: 0">
+                    <table id="rules" class="aui" style="table-layout: fixed">
+                        <thead>
+                            <tr>
+                                <th width="28%">Source Parent Page</th>
+                                <th width="28%">Target Parent Page</th>
+                                <th width="11%">Prefix<sup><a href="#prefix">1</a></th>
+                                <th width="11%">Date Format<sup><a href="dateFormat">2</a></th>
+                                <th width="11%">User for Execution<sup><a href="#jobUser">3</a></th>
+                                <th width="7%">Recursive<sup><a href="#recursive">4</a></th>
+                                <th width="4%">&nbsp;</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            #foreach($rule in $configuration.rules)
+                            <tr>
+                                <td><input class="autocomplete-page text full-width-field rules.sourceParentPage" name="ruleSourceParentPages" value="${rule.sourceParentPage}" data-template="{title} ({space.key})" data-resize-to-input="true" data-none-message="$i18n.getText('prop.de.langs.archivela.noresults')"></td>
+                                <td><input class="autocomplete-page text full-width-field rules.targetParentPage" name="ruleTargetParentPages" value="${rule.targetParentPage}" data-template="{title} ({space.key})" data-resize-to-input="true" data-none-message="$i18n.getText('prop.de.langs.archivela.noresults')"></td>
+                                <td><input class="text full-width-field rules.prefix" name="rulePrefixes" value="${rule.prefix}"></td>
+                                <td><input class="text full-width-field rules.dateFormat" name="ruleDateFormats" value="${rule.dateFormat}"></td>
+                                <td><input class="autocomplete-user text full-width-field rules.jobUser" name="ruleJobUsers" value="${rule.jobUser}" data-template="{username}" data-resize-to-input="true" data-none-message="$i18n.getText('prop.de.langs.archivela.noresults')"></td>
+                                
+                                <td>
+                                    <select class="rules.recursive" name="ruleRecursives">
+                                        <option #if ($rule.recursive == "yes") selected="selected" #end value="yes">Yes</option>
+                                        <option #if ($rule.recursive == "no") selected="selected" #end value="no">No</option>
+                                    </select>
+                                </td>
+                                
+                                <td>
+                                    <button title="remove" style="float:left" class="aui-button aui-button-subtle rules.delete" type="button">
+                                        <span class="aui-icon aui-icon-small aui-iconfont-delete"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                            #end
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="7">
+                                    <button type="button" class="aui-button" id="rules.add">
+                                        <span class="aui-icon aui-icon-small aui-iconfont-add"></span>&nbsp;Add&nbsp;Rule
+                                    </button>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <div class="description">
+                        <sup id="prefix">1</sup>&nbsp;Only labels with this prefix will be considered for parsing of the date. Leave empty if the whole label is a date.<br>
+                        <sup id="dateFormat">2</sup>&nbsp;<a href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a> used for parsing the labels as a date. Please note that the allowed characters of a label are limited, thus not all formats might be possible.<br>
+                        <sup id="jobUser">3</sup>&nbsp;The user needs to have the appropriate permissions (i.e. can access/edit the source and target pages) as the job will impersonate this user.<br>
+                        <sup id="recursive">4</sup>&nbsp;Whether all descendants (Yes) or just the direct child pages (No) of the source parent page shall be considered.<br>
+                    </div>
+                    #foreach ($error in $fieldErrors.get("configuration.rules")) <div class="error">$error</div> #end
+                </fieldset>
+            </div>
+
+            <div style="padding-top: 20px;">
+                <div class="buttons">
+                    <input class="button submit" type="submit" value="Save" id="confirm">
+                </div>
+            </div>
+
+			<!-- https://developer.atlassian.com/server/confluence/form-token-handling/ -->
+            #form_xsrfToken()
+        </form>
+
+    </body>
+</html

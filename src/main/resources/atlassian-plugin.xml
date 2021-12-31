@@ -1,0 +1,58 @@
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="plugin-icon">images/pluginIcon.png</param>
+        <param name="plugin-logo">images/pluginLogo.png</param>
+        
+        <param name="configure.url">/admin/plugins/archivela/configuration.action</param>
+    </plugin-info>
+
+    <!-- add our i18n resource -->
+    <resource type="i18n" name="i18n" location="archivela"/>
+    
+    <!-- add our web resources -->
+    <web-resource key="archivela-resources" i18n-name-key="prop.de.langs.archivela.webresources">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+
+        <resource type="download" name="images/" location="/images"/>
+
+        <context>archivela</context>
+    </web-resource>
+    
+    <job-config name="Archivela Job Config" key="archivelaJobConfig">
+        <job key="archivelaJob" perClusterJob="true" />
+        <description>Archivela Job</description>
+        <!-- Every night at 00:05 -->
+        <schedule cron-expression="0 5 0 * * ?" jitterSecs="60"/>
+        <managed editable="true" keepingHistory="true" canRunAdhoc="true" canDisable="true"/>
+    </job-config>
+
+    <web-item key="archivela-admin-link" name="Archivela Configuration Link" section="system.admin/configuration" weight="1000">
+        <description>Link to the Archivela configuration page</description>
+        <label>Archivela</label>
+        <link linkId="archivela-admin-link">/admin/plugins/archivela/configuration.action</link>
+    </web-item>
+
+    <xwork name="Archivela Configuration Action" key="configuration">
+        <description>Actions for editing the configuration.</description>
+
+         <package name="archivela" extends="default" namespace="/admin/plugins/archivela">
+            <default-interceptor-ref name="defaultStack" />
+
+            <action name="configuration" class="de.langs.archivela.ConfigurationAction" method="doDefault" roles-required="admin">
+                <result name="input" type="velocity">/vm/configuration.vm</result>
+            </action>
+
+            <action name="doConfiguration" class="de.langs.archivela.ConfigurationAction" roles-required="admin">
+                <interceptor-ref name="validatingStack" />
+                <param name="RequireSecurityToken">true</param>
+                <result name="input" type="velocity">/vm/configuration.vm</result>
+                <result name="success" type="velocity">/vm/configuration.vm</result>
+                <result name="error" type="velocity">/vm/configuration.vm</result>
+            </action>
+        </package>
+    </xwork>
+
+</atlassian-plugin>
