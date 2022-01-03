@@ -70,10 +70,11 @@ I am happy to hear your feedback and getting a star :blush:. Please get in conta
 
 <!-- Markdown link & img dfn's -->
 [conf-image]: https://img.shields.io/badge/Confluence-7.15.0-green.svg
+[conf-url]: https://atlassian.com/software/confluence
 [conf-dev]: https://developer.atlassian.com/server/framework/atlassian-sdk/
 [conf-install-app]: https://confluence.atlassian.com/upm/installing-add-ons-273875715.html
 [license-image]: https://img.shields.io/github/license/alangs/archivela.svg
-[archivela-issues]: issues
+[archivela-issues]: https://github.com/alangs/archivela/issues
 [archivela-license]: LICENSE
 [mail2blog]: https://github.com/dm-drogeriemarkt/Email-to-Confluence
 [mail2blog-license]: src/main/resources/licenses/Email-to-Confluence/LICENSE
