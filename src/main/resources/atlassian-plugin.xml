@@ -42,15 +42,15 @@
             <default-interceptor-ref name="defaultStack" />
 
             <action name="configuration" class="de.langs.archivela.ConfigurationAction" method="doDefault" roles-required="admin">
-                <result name="input" type="velocity">/vm/configuration.vm</result>
+                <result name="input" type="velocity">/vm/archivela-configuration.vm</result>
             </action>
 
             <action name="doConfiguration" class="de.langs.archivela.ConfigurationAction" roles-required="admin">
                 <interceptor-ref name="validatingStack" />
                 <param name="RequireSecurityToken">true</param>
-                <result name="input" type="velocity">/vm/configuration.vm</result>
-                <result name="success" type="velocity">/vm/configuration.vm</result>
-                <result name="error" type="velocity">/vm/configuration.vm</result>
+                <result name="input" type="velocity">/vm/archivela-configuration.vm</result>
+                <result name="success" type="velocity">/vm/archivela-configuration.vm</result>
+                <result name="error" type="velocity">/vm/archivela-configuration.vm</result>
             </action>
         </package>
     </xwork>
