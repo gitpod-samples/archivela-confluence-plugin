@@ -5,7 +5,7 @@ tasks:
   - name: Build and Launch
     init: |
       atlas-package
-      atlas-run --http-port 1000000
+      atlas-run --http-port 1000000 || true
     command: |
       atlas-run
   - name: Launch
