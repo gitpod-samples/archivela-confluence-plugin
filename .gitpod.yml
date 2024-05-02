@@ -2,11 +2,14 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - name: build
+  - name: Build and Launch
     init: |
       atlas-package
+      atlas-run --http-port 1000000
     command: |
       atlas-run
+  - name: Launch
+    command: |
       gp ports await 1990
       gp preview --external "$(gp url 1990)/confluence"
 
