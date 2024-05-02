@@ -4,12 +4,24 @@ image:
 tasks:
   - name: Build and Launch
     init: |
+      # this runs during Prebuilds.
+      
+      # download all dependencies and compile source code. 
       atlas-package
+
+      # This is a hack: We want to download all dependencies but not launch the application. 
+      # By giving it an invalid port (1000000), we prevent the app from launching. Please reach out if you know a better sollution!
       atlas-run --http-port 1000000 || true
-    command: |
+    command: |  
+      # This runs when a Gitpod workspace opens.
+
+      # Launch the application. 
       atlas-run
   - name: Launch
     command: |
+      # This runs when a Gitpod workspace opens.
+
+      # Wait until a a service (confluence) listens on port 1990 and then open a new browser tab.
       gp ports await 1990
       gp preview --external "$(gp url 1990)/confluence"
 
