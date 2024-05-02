@@ -1,2 +1,25 @@
 image:
   file: .gitpod.Dockerfile
+
+tasks:
+  - name: build
+    init: |
+      atlas-package
+    command: |
+      atlas-run
+      gp ports await 1990
+      gp preview --external "$(gp url 1990)/confluence"
+
+ports:
+  - port: 1990
+    visibility: private
+    onOpen: ignore
+  - port: 8091
+    visibility: private
+    onOpen: ignore
+  - port: 9092
+    visibility: private
+    onOpen: ignore
+  - port: 35061
+    visibility: private
+    onOpen: ignore
